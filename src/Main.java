@@ -19,24 +19,24 @@ public class Main {
             );
         }
         //Найти количество несовершеннолетних (т.е. людей младше 18 лет)
-        List agePeople = new ArrayList<>(persons) //создаем новый список(кот можно менять)+копируем то, что было в старом списке
-                .stream().filter(person -> .getAge < 18)  //промежуточный
-                .count(); //термальный
+        List agePeople = Collections.singletonList(new ArrayList<>(persons) //создаем новый список(кот можно менять)+копируем то, что было в старом списке
+                .stream().filter(person -> person.getAge() < 18)  //промежуточный
+                .count()); //термальный
+
 
         //Получить список фамилий призывников (т.е. мужчин от 18 и до 27 лет).
         List conscript = new ArrayList<>(persons)
-                .stream().filter(person -> .getAge <= 27)
-                .stream().filter(person -> .getAge >= 18)
-                .map //для преобразования данных из Person в String (так как нужны только фамилии)
+                .stream().filter(person -> person.getAge() <= 27 && person.getAge() >= 18)
+                .map(Person::getFamily) //для преобразования данных из Person в String (так как нужны только фамилии)
                 .collect(Collectors.toList()); //получить список List<String>
 
         //Получить отсортированный по фамилии список потенциально работоспособных людей с высшим
         //образованием в выборке (т.е. людей с высшим образованием от 18 до 60 лет для женщин и до 65 лет для мужчин).
         List workable = new ArrayList<>(persons)
-                .stream().filter(person -> )  //высшее образование
-                .stream().filter(person -> .getAge <= 65)  //возраст
-                .stream().filter(person -> .getAge >= 18)
-                .sorted()
+                .stream().filter(person -> person.getSex() == Sex.WOMAN && person.getAge() >= 18 && person.getAge() <= 60
+                        && person.getEducation() == Education.HIGHER || person.getSex() == Sex.MAN && person.getAge() >= 18
+                        && person.getAge() <= 65 && person.getEducation() == Education.HIGHER)  //фильтр на возраст и образование
+                .sorted(Comparator.comparing(Person::getFamily))  //положили компаратор по фамилиям Comparator.comparing()
                 .collect(Collectors.toList());  //получить список
     }
 }
